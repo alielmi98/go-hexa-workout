@@ -1,0 +1,30 @@
+
+version: "3.7"
+
+services:
+
+  ############### will be implemented later backend service ################
+  ####################### POSTGRES #######################
+  postgres:
+    image: postgres
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: workout_tracker
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - webapi_network
+    restart: unless-stopped
+
+####################### VOLUME AND NETWORKS #######################
+volumes:
+  postgres:
+
+networks:
+  webapi_network:
+    driver: bridge
