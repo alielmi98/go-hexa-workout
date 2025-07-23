@@ -2,6 +2,7 @@ package repo
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/alielmi98/go-hexa-workout/constants"
@@ -75,6 +76,21 @@ func (r *PgRepo) Delete(ctx context.Context, id int) error {
 	}
 	tx.Commit()
 	return nil
+}
+
+func (r *PgRepo) FindByUsername(ctx context.Context, username string) (*core.User, error) {
+	var user core.User
+	err := r.db.WithContext(ctx).
+		Model(&core.User{}).
+		Where("username = ?", username).
+		First(&user).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, &service_errors.ServiceError{EndUserMessage: service_errors.UsernameOrPasswordInvalid}
+		}
+		return nil, err
+	}
+	return &user, nil
 }
 
 func (r *PgRepo) existsByEmail(email string) (bool, error) {
