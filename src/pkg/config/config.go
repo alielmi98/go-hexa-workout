@@ -108,10 +108,10 @@ func LoadConfig(filename string, fileType string) (*viper.Viper, error) {
 
 func getConfigPath(env string) string {
 	if env == "docker" {
-		return "/app/config/config-docker"
+		return "/app/pkg/config/config-docker"
 	} else if env == "production" {
-		return "/config/config-production"
+		return "/app/pkg/config/config-production"
 	} else {
-		return "../config/config-development"
+		return "../../pkg/config/config-development"
 	}
 }

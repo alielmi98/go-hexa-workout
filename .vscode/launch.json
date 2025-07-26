@@ -10,6 +10,8 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/src/cmd/server",
+            "preLaunchTask": "swag",
+
         }
     ]
 }
