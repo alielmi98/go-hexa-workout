@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/alielmi98/go-hexa-workout/constants"
 	"github.com/alielmi98/go-hexa-workout/dependency"
 	"github.com/alielmi98/go-hexa-workout/internal/user/adapter/http/dto"
 	"github.com/alielmi98/go-hexa-workout/internal/user/core/usecase"
@@ -52,4 +53,35 @@ func (h *AccountHandler) Create(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusCreated, helper.GenerateBaseResponse("User created", true, helper.Success))
+}
+
+// LoginByUsername godoc
+// @Summary LoginByUsername
+// @Description LoginByUsername
+// @Tags Account
+// @Accept  json
+// @Produce  json
+// @Param Request body dto.LoginByUsernameRequest true "LoginByUsernameRequest"
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 400 {object} helper.BaseHttpResponse "Failed"
+// @Failure 401 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/account/login [post]
+func (h *AccountHandler) LoginByUsername(c *gin.Context) {
+	var req dto.LoginByUsernameRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
+		return
+	}
+	td, err := h.usecase.LoginByUsername(c, &req)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+
+	// Set the refresh token in a cookie
+	c.SetCookie(constants.RefreshTokenCookieName, td.RefreshToken, int(h.cfg.JWT.RefreshTokenExpireDuration*60), "/", h.cfg.Server.Domain, true, true)
+
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(td, true, helper.Success))
 }

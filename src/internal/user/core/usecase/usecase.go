@@ -7,8 +7,10 @@ import (
 	"github.com/alielmi98/go-hexa-workout/constants"
 	"github.com/alielmi98/go-hexa-workout/internal/user/adapter/http/dto"
 	model "github.com/alielmi98/go-hexa-workout/internal/user/core/models"
+	"github.com/alielmi98/go-hexa-workout/internal/user/entity"
 	"github.com/alielmi98/go-hexa-workout/internal/user/port"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
+	"github.com/alielmi98/go-hexa-workout/pkg/service_errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -50,4 +52,24 @@ func (s *UserUsecase) RegisterByUsername(ctx context.Context, req *dto.RegisterU
 	}
 	return nil
 
+}
+
+func (s *UserUsecase) LoginByUsername(ctx context.Context, req *dto.LoginByUsernameRequest) (*dto.TokenDetail, error) {
+	user, err := s.repo.FindByUsername(ctx, req.Username)
+	if err != nil {
+		return nil, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
+		return nil, &service_errors.ServiceError{EndUserMessage: service_errors.UsernameOrPasswordInvalid}
+	}
+
+	tdto := entity.TokenPayload{UserId: user.Id, FirstName: user.FirstName, LastName: user.LastName,
+		Username: user.Username, Email: user.Email, MobileNumber: user.MobileNumber}
+
+	token, err := s.token.GenerateToken(&tdto)
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
 }
