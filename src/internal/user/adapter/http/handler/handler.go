@@ -20,8 +20,9 @@ type AccountHandler struct {
 
 // NewAccountHandler ...
 func NewAccountHandler(cfg *config.Config) *AccountHandler {
+	repo, token := dependency.GetUserRepository(cfg)
 	return &AccountHandler{
-		usecase: usecase.NewUserUsecase(cfg, dependency.GetUserRepository(cfg)),
+		usecase: usecase.NewUserUsecase(cfg, repo, token),
 		cfg:     cfg,
 	}
 }

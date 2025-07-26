@@ -13,14 +13,16 @@ import (
 )
 
 type UserUsecase struct {
-	cfg  *config.Config
-	repo port.UserRepository
+	cfg   *config.Config
+	repo  port.UserRepository
+	token port.TokenProvider
 }
 
-func NewUserUsecase(cfg *config.Config, repository port.UserRepository) *UserUsecase {
+func NewUserUsecase(cfg *config.Config, repository port.UserRepository, token port.TokenProvider) *UserUsecase {
 	return &UserUsecase{
-		cfg:  cfg,
-		repo: repository,
+		cfg:   cfg,
+		repo:  repository,
+		token: token,
 	}
 }
 
