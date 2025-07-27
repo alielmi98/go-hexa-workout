@@ -71,7 +71,9 @@ func (m *MockUserRepository) ExistsByUsername(username string) (bool, error) {
 	return false, nil
 }
 
-type MockTokenProvider struct{}
+type MockTokenProvider struct {
+	RefreshTokenFn func(refreshToken string) (*dto.TokenDetail, error)
+}
 
 func (m *MockTokenProvider) GenerateToken(token *entity.TokenPayload) (*dto.TokenDetail, error) {
 	return &dto.TokenDetail{AccessToken: "token", RefreshToken: "refresh", AccessTokenExpireTime: 0, RefreshTokenExpireTime: 0}, nil
@@ -81,7 +83,10 @@ func (m *MockTokenProvider) GetClaims(token string) (map[string]interface{}, err
 	return map[string]interface{}{}, nil
 }
 func (m *MockTokenProvider) RefreshToken(refreshToken string) (*dto.TokenDetail, error) {
-	return &dto.TokenDetail{}, nil
+	if m.RefreshTokenFn != nil {
+		return m.RefreshTokenFn(refreshToken)
+	}
+	return &dto.TokenDetail{AccessToken: "new-token", RefreshToken: "new-refresh", AccessTokenExpireTime: 0, RefreshTokenExpireTime: 0}, nil
 }
 
 func setup(repo *MockUserRepository) (*usecase.UserUsecase, *MockUserRepository) {
@@ -266,6 +271,34 @@ func TestLoginUser_GenerateTokenError(t *testing.T) {
 	}
 
 	tokenDetail, err := useCase.LoginByUsername(nil, req)
+	assert.Error(t, err)
+	assert.True(t, tokenDetail == nil)
+}
+
+func TestRefreshToken_Success(t *testing.T) {
+	repo := &MockUserRepository{}
+	useCase, _ := setup(repo)
+
+	tokenDetail, err := useCase.RefreshToken("valid-refresh-token")
+	assert.NoError(t, err)
+	assert.True(t, tokenDetail != nil)
+	assert.True(t, tokenDetail.AccessToken != "")
+	assert.True(t, tokenDetail.RefreshToken != "")
+	assert.Equal(t, int64(0), tokenDetail.AccessTokenExpireTime)
+	assert.Equal(t, int64(0), tokenDetail.RefreshTokenExpireTime)
+}
+
+func TestRefreshToken_Error(t *testing.T) {
+	mockConfig := &config.Config{}
+	mockRepo := &MockUserRepository{}
+	mockToken := &MockTokenProvider{
+		RefreshTokenFn: func(refreshToken string) (*dto.TokenDetail, error) {
+			return nil, errors.New("refresh token error")
+		},
+	}
+	useCase := usecase.NewUserUsecase(mockConfig, mockRepo, mockToken)
+
+	tokenDetail, err := useCase.RefreshToken("invalid-refresh-token")
 	assert.Error(t, err)
 	assert.True(t, tokenDetail == nil)
 }
