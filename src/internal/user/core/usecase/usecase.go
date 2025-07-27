@@ -36,6 +36,14 @@ func (s *UserUsecase) RegisterByUsername(ctx context.Context, req *dto.RegisterU
 		LastName:  req.LastName,
 		Email:     req.Email,
 	}
+	// Check if username already exists
+	if existing, _ := s.repo.ExistsByUsername(req.Username); existing {
+		return &service_errors.ServiceError{EndUserMessage: service_errors.UsernameExists}
+	}
+	// Check if email already exists
+	if existing, _ := s.repo.ExistsByEmail(req.Email); existing {
+		return &service_errors.ServiceError{EndUserMessage: service_errors.EmailExists}
+	}
 	// Hash password
 	bp := []byte(req.Password)
 	hp, err := bcrypt.GenerateFromPassword(bp, bcrypt.DefaultCost)

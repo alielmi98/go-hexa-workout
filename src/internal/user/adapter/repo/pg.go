@@ -22,22 +22,8 @@ func NewUserPgRepo() *PgRepo {
 }
 
 func (r *PgRepo) Create(ctx context.Context, user *model.User) error {
-	exists, err := r.existsByEmail(user.Email)
-	if err != nil {
-		return err
-	}
-	if exists {
-		return &service_errors.ServiceError{EndUserMessage: service_errors.EmailExists}
-	}
-	exists, err = r.existsByUsername(user.Username)
-	if err != nil {
-		return err
-	}
-	if exists {
-		return &service_errors.ServiceError{EndUserMessage: service_errors.UsernameExists}
-	}
 	tx := r.db.WithContext(ctx).Begin()
-	err = tx.Create(&user).Error
+	err := tx.Create(&user).Error
 	if err != nil {
 		tx.Rollback()
 		log.Printf("Caller:%s Level:%s Msg:%s", constants.Postgres, constants.Rollback, err.Error())
@@ -94,7 +80,7 @@ func (r *PgRepo) FindByUsername(ctx context.Context, username string) (*model.Us
 	return &user, nil
 }
 
-func (r *PgRepo) existsByEmail(email string) (bool, error) {
+func (r *PgRepo) ExistsByEmail(email string) (bool, error) {
 	var exists bool
 	if err := r.db.Model(&model.User{}).
 		Select("count(*) > 0").
@@ -107,7 +93,7 @@ func (r *PgRepo) existsByEmail(email string) (bool, error) {
 	return exists, nil
 }
 
-func (r *PgRepo) existsByUsername(username string) (bool, error) {
+func (r *PgRepo) ExistsByUsername(username string) (bool, error) {
 	var exists bool
 	if err := r.db.Model(&model.User{}).
 		Select("count(*) > 0").
