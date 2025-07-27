@@ -10,5 +10,6 @@ func Account(router *gin.RouterGroup, cfg *config.Config) {
 	handler := handler.NewAccountHandler(cfg)
 	router.POST("/register", handler.Create)
 	router.POST("/login", handler.LoginByUsername)
+	router.POST("/refresh-token", handler.RefreshToken)
 
 }

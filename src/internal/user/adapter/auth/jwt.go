@@ -8,7 +8,6 @@ import (
 	"github.com/alielmi98/go-hexa-workout/internal/user/entity"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
 	"github.com/alielmi98/go-hexa-workout/pkg/service_errors"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 )
 
@@ -96,29 +95,10 @@ func (s *JwtProvider) GetClaims(token string) (claimMap map[string]interface{}, 
 	}
 	return nil, &service_errors.ServiceError{EndUserMessage: service_errors.ClaimsNotFound}
 }
-func (s *JwtProvider) RefreshToken(c *gin.Context) (*dto.TokenDetail, error) {
-	refreshToken, err := c.Cookie(constants.RefreshTokenCookieName)
-	if err != nil {
-		return nil, &service_errors.ServiceError{EndUserMessage: service_errors.InvalidRefreshToken}
-	}
-
+func (s *JwtProvider) RefreshToken(refreshToken string) (*dto.TokenDetail, error) {
 	claims, err := s.GetClaims(refreshToken)
 	if err != nil {
 		return nil, err
-	}
-
-	// Convert roles to []string
-	rolesInterface, ok := claims[constants.RolesKey].([]interface{})
-	if !ok {
-		return nil, &service_errors.ServiceError{EndUserMessage: service_errors.InvalidRolesFormat}
-	}
-
-	roles := make([]string, len(rolesInterface))
-	for i, role := range rolesInterface {
-		roles[i], ok = role.(string)
-		if !ok {
-			return nil, &service_errors.ServiceError{EndUserMessage: service_errors.InvalidRolesFormat}
-		}
 	}
 
 	tokenDto := entity.TokenPayload{
@@ -133,8 +113,6 @@ func (s *JwtProvider) RefreshToken(c *gin.Context) (*dto.TokenDetail, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	c.SetCookie(constants.RefreshTokenCookieName, newTokenDetail.RefreshToken, int(s.cfg.JWT.RefreshTokenExpireDuration*60), "/", s.cfg.Server.Domain, true, true)
 
 	return newTokenDetail, nil
 }

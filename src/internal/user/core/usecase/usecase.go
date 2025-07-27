@@ -81,3 +81,12 @@ func (s *UserUsecase) LoginByUsername(ctx context.Context, req *dto.LoginByUsern
 	}
 	return token, nil
 }
+
+func (s *UserUsecase) RefreshToken(refreshToken string) (*dto.TokenDetail, error) {
+	tokenDetail, err := s.token.RefreshToken(refreshToken)
+	if err != nil {
+		return nil, err
+	}
+
+	return tokenDetail, nil
+}

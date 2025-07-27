@@ -61,6 +61,41 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/account/refresh-token": {
+            "post": {
+                "description": "RefreshToken",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "RefreshToken",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Failed",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/account/register": {
             "post": {
                 "description": "RegisterByUsername",

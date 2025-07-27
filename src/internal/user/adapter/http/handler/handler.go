@@ -85,3 +85,35 @@ func (h *AccountHandler) LoginByUsername(c *gin.Context) {
 
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(td, true, helper.Success))
 }
+
+// RefreshToken godoc
+// @Summary RefreshToken
+// @Description RefreshToken
+// @Tags Account
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} helper.BaseHttpResponse "Success"
+// @Failure 400 {object} helper.BaseHttpResponse "Failed"
+// @Failure 401 {object} helper.BaseHttpResponse "Failed"
+// @Router /v1/account/refresh-token [post]
+func (h *AccountHandler) RefreshToken(c *gin.Context) {
+	// Get the refresh token from the cookie
+	refreshToken, err := c.Cookie(constants.RefreshTokenCookieName)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.AuthError, err))
+		return
+	}
+	// Call the usecase to refresh the token
+	td, err := h.usecase.RefreshToken(refreshToken)
+	if err != nil {
+		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
+			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
+		return
+	}
+	// Set the new refresh token in a cookie
+	c.SetCookie(constants.RefreshTokenCookieName, td.RefreshToken,
+		int(h.cfg.JWT.RefreshTokenExpireDuration*60), "/", h.cfg.Server.Domain, true, true)
+	// Return the token details
+	c.JSON(http.StatusOK, helper.GenerateBaseResponse(td, true, helper.Success))
+}

@@ -11,7 +11,6 @@ import (
 	"github.com/alielmi98/go-hexa-workout/internal/user/core/usecase"
 	"github.com/alielmi98/go-hexa-workout/internal/user/entity"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
-	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -81,7 +80,7 @@ func (m *MockTokenProvider) VerifyToken(token string) (*jwt.Token, error) { retu
 func (m *MockTokenProvider) GetClaims(token string) (map[string]interface{}, error) {
 	return map[string]interface{}{}, nil
 }
-func (m *MockTokenProvider) RefreshToken(c *gin.Context) (*dto.TokenDetail, error) {
+func (m *MockTokenProvider) RefreshToken(refreshToken string) (*dto.TokenDetail, error) {
 	return &dto.TokenDetail{}, nil
 }
 
