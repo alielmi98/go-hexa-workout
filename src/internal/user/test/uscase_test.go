@@ -13,6 +13,7 @@ import (
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type MockUserRepository struct {
@@ -174,4 +175,98 @@ func TestRegisterUser_EmailExists(t *testing.T) {
 	err := useCase.RegisterByUsername(nil, user)
 	assert.Error(t, err)
 	assert.Equal(t, "Email exists", err.Error())
+}
+
+func TestLoginUser_Success(t *testing.T) {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
+	repo := &MockUserRepository{
+		FindByUsernameFn: func(ctx context.Context, username string) (*model.User, error) {
+			return &model.User{
+				Username:  "testuser",
+				Password:  string(hashedPassword),
+				Email:     "testuser@example.com",
+				FirstName: "Test",
+				LastName:  "User",
+			}, nil // hashed password
+		},
+	}
+	useCase, _ := setup(repo)
+
+	req := &dto.LoginByUsernameRequest{
+		Username: "testuser",
+		Password: "password",
+	}
+
+	tokenDetail, err := useCase.LoginByUsername(nil, req)
+	assert.NoError(t, err)
+	assert.True(t, tokenDetail != nil)
+	assert.True(t, tokenDetail.AccessToken != "")
+	assert.True(t, tokenDetail.RefreshToken != "")
+}
+
+func TestLoginUser_Failure(t *testing.T) {
+	repo := &MockUserRepository{
+		FindByUsernameFn: func(ctx context.Context, username string) (*model.User, error) {
+			return nil, errors.New("user not found")
+		},
+	}
+	useCase, _ := setup(repo)
+
+	req := &dto.LoginByUsernameRequest{
+		Username: "nonexistentuser",
+		Password: "password",
+	}
+
+	tokenDetail, err := useCase.LoginByUsername(nil, req)
+	assert.Error(t, err)
+	assert.True(t, tokenDetail == nil)
+}
+
+func TestLoginUser_InvalidPassword(t *testing.T) {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("correctpassword"), bcrypt.DefaultCost)
+	repo := &MockUserRepository{
+		FindByUsernameFn: func(ctx context.Context, username string) (*model.User, error) {
+			return &model.User{
+				Username:  "testuser",
+				Password:  string(hashedPassword),
+				Email:     "testuser@example.com",
+				FirstName: "Test",
+				LastName:  "User",
+			}, nil
+		},
+	}
+	useCase, _ := setup(repo)
+
+	req := &dto.LoginByUsernameRequest{
+		Username: "testuser",
+		Password: "wrongpassword",
+	}
+
+	tokenDetail, err := useCase.LoginByUsername(nil, req)
+	assert.Error(t, err)
+	assert.True(t, tokenDetail == nil)
+}
+func TestLoginUser_GenerateTokenError(t *testing.T) {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
+	repo := &MockUserRepository{
+		FindByUsernameFn: func(ctx context.Context, username string) (*model.User, error) {
+			return &model.User{
+				Username:  "testuser",
+				Password:  string(hashedPassword),
+				Email:     "testuser@example.com",
+				FirstName: "Test",
+				LastName:  "User",
+			}, nil
+		},
+	}
+	useCase, _ := setup(repo)
+
+	req := &dto.LoginByUsernameRequest{
+		Username: "testuser",
+		Password: "wrongpassword",
+	}
+
+	tokenDetail, err := useCase.LoginByUsername(nil, req)
+	assert.Error(t, err)
+	assert.True(t, tokenDetail == nil)
 }
