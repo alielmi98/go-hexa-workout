@@ -81,8 +81,17 @@ func (h *AccountHandler) LoginByUsername(c *gin.Context) {
 	}
 
 	// Set the refresh token in a cookie
-	c.SetCookie(constants.RefreshTokenCookieName, td.RefreshToken, int(h.cfg.JWT.RefreshTokenExpireDuration*60), "/", h.cfg.Server.Domain, true, true)
-
+	// Set the new refresh token in a cookie
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     constants.RefreshTokenCookieName,
+		Value:    td.RefreshToken,
+		MaxAge:   int(h.cfg.JWT.RefreshTokenExpireDuration * 60),
+		Path:     "/",
+		Domain:   h.cfg.Server.Domain,
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	})
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(td, true, helper.Success))
 }
 
@@ -112,8 +121,16 @@ func (h *AccountHandler) RefreshToken(c *gin.Context) {
 		return
 	}
 	// Set the new refresh token in a cookie
-	c.SetCookie(constants.RefreshTokenCookieName, td.RefreshToken,
-		int(h.cfg.JWT.RefreshTokenExpireDuration*60), "/", h.cfg.Server.Domain, true, true)
+	http.SetCookie(c.Writer, &http.Cookie{
+		Name:     constants.RefreshTokenCookieName,
+		Value:    td.RefreshToken,
+		MaxAge:   int(h.cfg.JWT.RefreshTokenExpireDuration * 60),
+		Path:     "/",
+		Domain:   h.cfg.Server.Domain,
+		Secure:   true,
+		HttpOnly: true,
+		SameSite: http.SameSiteStrictMode,
+	})
 	// Return the token details
 	c.JSON(http.StatusOK, helper.GenerateBaseResponse(td, true, helper.Success))
 }
