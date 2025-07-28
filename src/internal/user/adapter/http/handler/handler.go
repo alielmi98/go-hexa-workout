@@ -15,16 +15,16 @@ import (
 
 // AccountHandler ...
 type AccountHandler struct {
-	usecase *usecase.UserUsecase
-	cfg     *config.Config
+	Usecase *usecase.UserUsecase
+	Cfg     *config.Config
 }
 
 // NewAccountHandler ...
 func NewAccountHandler(cfg *config.Config) *AccountHandler {
 	repo, token := dependency.GetUserRepository(cfg)
 	return &AccountHandler{
-		usecase: usecase.NewUserUsecase(cfg, repo, token),
-		cfg:     cfg,
+		Usecase: usecase.NewUserUsecase(cfg, repo, token),
+		Cfg:     cfg,
 	}
 }
 
@@ -46,7 +46,7 @@ func (h *AccountHandler) Create(c *gin.Context) {
 			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
 		return
 	}
-	err := h.usecase.RegisterByUsername(c, &req)
+	err := h.Usecase.RegisterByUsername(c, &req)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
@@ -73,7 +73,7 @@ func (h *AccountHandler) LoginByUsername(c *gin.Context) {
 			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
 		return
 	}
-	td, err := h.usecase.LoginByUsername(c, &req)
+	td, err := h.Usecase.LoginByUsername(c, &req)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
@@ -85,9 +85,9 @@ func (h *AccountHandler) LoginByUsername(c *gin.Context) {
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     constants.RefreshTokenCookieName,
 		Value:    td.RefreshToken,
-		MaxAge:   int(h.cfg.JWT.RefreshTokenExpireDuration * 60),
+		MaxAge:   int(h.Cfg.JWT.RefreshTokenExpireDuration * 60),
 		Path:     "/",
-		Domain:   h.cfg.Server.Domain,
+		Domain:   h.Cfg.Server.Domain,
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
@@ -114,7 +114,7 @@ func (h *AccountHandler) RefreshToken(c *gin.Context) {
 		return
 	}
 	// Call the usecase to refresh the token
-	td, err := h.usecase.RefreshToken(refreshToken)
+	td, err := h.Usecase.RefreshToken(refreshToken)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
@@ -124,9 +124,9 @@ func (h *AccountHandler) RefreshToken(c *gin.Context) {
 	http.SetCookie(c.Writer, &http.Cookie{
 		Name:     constants.RefreshTokenCookieName,
 		Value:    td.RefreshToken,
-		MaxAge:   int(h.cfg.JWT.RefreshTokenExpireDuration * 60),
+		MaxAge:   int(h.Cfg.JWT.RefreshTokenExpireDuration * 60),
 		Path:     "/",
-		Domain:   h.cfg.Server.Domain,
+		Domain:   h.Cfg.Server.Domain,
 		Secure:   true,
 		HttpOnly: true,
 		SameSite: http.SameSiteStrictMode,
