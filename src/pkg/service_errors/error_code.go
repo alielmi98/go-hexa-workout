@@ -14,6 +14,8 @@ const (
 	UsernameExists            = "Username exists"
 	PermissionDenied          = "Permission denied"
 	UsernameOrPasswordInvalid = "username or password invalid"
+	// Validation
+	ValidationError = "validation error"
 
 	// DB
 	RecordNotFound = "record not found"

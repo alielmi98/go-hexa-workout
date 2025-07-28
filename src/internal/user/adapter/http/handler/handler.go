@@ -39,8 +39,9 @@ func NewAccountHandler(cfg *config.Config) *AccountHandler {
 // @Failure 400 {object} helper.BaseHttpResponse "Failed"
 // @Failure 409 {object} helper.BaseHttpResponse "Failed"
 // @Router /v1/account/register [post]
-func (h *AccountHandler) Create(c *gin.Context) {
+func (h *AccountHandler) RegisterByUsername(c *gin.Context) {
 	var req dto.RegisterUserByUsernameRequest
+
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest,
 			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))

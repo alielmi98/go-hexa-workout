@@ -117,3 +117,169 @@ func TestLoginByUsername_InvalidCredentials(t *testing.T) {
 	assert.Equal(t, false, response.Success)
 	assert.Equal(t, "username or password invalid", response.Error)
 }
+
+func TestRegisterByUsername_Success(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{}
+	mockToken := &MockTokenProvider{}
+
+	cfg := &config.Config{}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/register", accountHandler.RegisterByUsername)
+
+	registerRequest := dto.RegisterUserByUsernameRequest{
+		Username:  "newuser",
+		Password:  "newpassword",
+		Email:     "newuser@example.com",
+		FirstName: "New",
+		LastName:  "User",
+	}
+
+	jsonData, _ := json.Marshal(registerRequest)
+	req, _ := http.NewRequest("POST", "/v1/account/register", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, true, response.Success)
+	assert.Equal(t, "User created", response.Result)
+}
+
+func TestRegisterByUsername_ValidationError(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{}
+	mockToken := &MockTokenProvider{}
+
+	cfg := &config.Config{}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/register", accountHandler.RegisterByUsername)
+
+	registerRequest := dto.RegisterUserByUsernameRequest{
+		Username:  "", // Invalid username
+		Password:  "newpassword",
+		Email:     "newuser@example.com",
+		FirstName: "New",
+		LastName:  "User",
+	}
+
+	jsonData, _ := json.Marshal(registerRequest)
+	req, _ := http.NewRequest("POST", "/v1/account/register", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, false, response.Success)
+	assert.Equal(t, helper.ValidationError, response.ResultCode)
+
+}
+
+func TestRegisterByUsername_UsernameExists(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{
+		ExistsByUsernameFn: func(username string) (bool, error) {
+			return true, nil // Simulate existing username
+		},
+	}
+	mockToken := &MockTokenProvider{}
+
+	cfg := &config.Config{}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/register", accountHandler.RegisterByUsername)
+
+	registerRequest := dto.RegisterUserByUsernameRequest{
+		Username:  "existinguser",
+		Password:  "newpassword",
+		Email:     "existinguser@example.com",
+		FirstName: "Existing",
+		LastName:  "User",
+	}
+
+	jsonData, _ := json.Marshal(registerRequest)
+	req, _ := http.NewRequest("POST", "/v1/account/register", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusConflict, w.Code)
+
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, false, response.Success)
+	assert.Equal(t, "Username exists", response.Error)
+
+}
+
+func TestRegisterByUsername_EmailExists(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{
+		ExistsByEmailFn: func(email string) (bool, error) {
+			return true, nil // Simulate existing email
+		},
+	}
+	mockToken := &MockTokenProvider{}
+
+	cfg := &config.Config{}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/register", accountHandler.RegisterByUsername)
+
+	registerRequest := dto.RegisterUserByUsernameRequest{
+		Username:  "newuser",
+		Password:  "newpassword",
+		Email:     "newuser@example.com",
+		FirstName: "New",
+		LastName:  "User",
+	}
+
+	jsonData, _ := json.Marshal(registerRequest)
+	req, _ := http.NewRequest("POST", "/v1/account/register", bytes.NewBuffer(jsonData))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusConflict, w.Code)
+
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, false, response.Success)
+	assert.Equal(t, "Email exists", response.Error)
+
+}
