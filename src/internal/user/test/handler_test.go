@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -282,4 +283,141 @@ func TestRegisterByUsername_EmailExists(t *testing.T) {
 	assert.Equal(t, false, response.Success)
 	assert.Equal(t, "Email exists", response.Error)
 
+}
+
+func TestRefreshTokenHandler_Success(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{}
+	mockToken := &MockTokenProvider{
+		RefreshTokenFn: func(token string) (*dto.TokenDetail, error) {
+			return &dto.TokenDetail{
+				AccessToken:  "newAccessToken",
+				RefreshToken: "newRefreshToken",
+			}, nil
+		},
+	}
+
+	cfg := &config.Config{
+		JWT: config.JWTConfig{
+			RefreshTokenExpireDuration: 60,
+		},
+		Server: config.ServerConfig{
+			Domain: "localhost",
+		},
+	}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/refresh-token", accountHandler.RefreshToken)
+
+	req, _ := http.NewRequest("POST", "/v1/account/refresh-token", nil)
+	req.Header.Set("Authorization", "Bearer validRefreshToken")
+	req.AddCookie(&http.Cookie{
+		Name:  constants.RefreshTokenCookieName,
+		Value: "refreshTokenValue",
+	})
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, true, response.Success)
+	// Check if the response contains the new access token
+	result, _ := response.Result.(map[string]interface{})
+	assert.Equal(t, "newAccessToken", result["accessToken"])
+	// Get the new refresh token from the cookie
+	cookies := w.Result().Cookies()
+	var newRefreshToken string
+	for _, cookie := range cookies {
+		if cookie.Name == constants.RefreshTokenCookieName {
+			newRefreshToken = cookie.Value
+			break
+		}
+	}
+	assert.Equal(t, "newRefreshToken", newRefreshToken)
+
+}
+
+func TestRefreshTokenHandler_Error(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{}
+	mockToken := &MockTokenProvider{
+		RefreshTokenFn: func(token string) (*dto.TokenDetail, error) {
+			return nil, errors.New("refresh token error")
+		},
+	}
+
+	cfg := &config.Config{}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/refresh-token", accountHandler.RefreshToken)
+
+	req, _ := http.NewRequest("POST", "/v1/account/refresh-token", nil)
+	req.AddCookie(&http.Cookie{
+		Name:  constants.RefreshTokenCookieName,
+		Value: "invalidRefreshToken",
+	})
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusInternalServerError, w.Code)
+
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, false, response.Success)
+	assert.Equal(t, "refresh token error", response.Error)
+}
+
+func TestRefreshTokenHandler_BadRequest(t *testing.T) {
+	// This test simulates a scenario where the refresh token is not provided or is invalid.
+	// It checks if the handler returns a Bad Request status code and the appropriate error message.
+	gin.SetMode(gin.TestMode)
+	mockRepo := &MockUserRepository{}
+	mockToken := &MockTokenProvider{}
+
+	cfg := &config.Config{
+		JWT: config.JWTConfig{
+			RefreshTokenExpireDuration: 60,
+		},
+		Server: config.ServerConfig{
+			Domain: "localhost",
+		},
+	}
+	usecase := usecase.NewUserUsecase(cfg, mockRepo, mockToken)
+	accountHandler := &handler.AccountHandler{
+		Usecase: usecase,
+		Cfg:     cfg,
+	}
+
+	router := gin.Default()
+	router.POST("/v1/account/refresh-token", accountHandler.RefreshToken)
+
+	req, _ := http.NewRequest("POST", "/v1/account/refresh-token", nil)
+	req.Header.Set("Authorization", "Bearer validRefreshToken")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+
+	var response helper.BaseHttpResponse
+	err := json.Unmarshal(w.Body.Bytes(), &response)
+	assert.NoError(t, err)
+	assert.Equal(t, false, response.Success)
+	assert.Equal(t, "http: named cookie not present", response.Error)
 }
