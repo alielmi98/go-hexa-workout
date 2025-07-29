@@ -5,6 +5,7 @@ import (
 
 	"github.com/alielmi98/go-hexa-workout/constants"
 	user_models "github.com/alielmi98/go-hexa-workout/internal/user/core/models"
+	workout_models "github.com/alielmi98/go-hexa-workout/internal/workout/core/models"
 	"github.com/alielmi98/go-hexa-workout/pkg/db"
 
 	"gorm.io/gorm"
@@ -21,6 +22,12 @@ func createTables(database *gorm.DB) {
 
 	// Account
 	tables = addNewTable(database, user_models.User{}, tables)
+
+	// Workout
+	tables = addNewTable(database, workout_models.Workout{}, tables)
+	tables = addNewTable(database, workout_models.WorkoutExercise{}, tables)
+	tables = addNewTable(database, workout_models.ScheduledWorkouts{}, tables)
+	tables = addNewTable(database, workout_models.WorkoutReport{}, tables)
 
 	err := database.Migrator().CreateTable(tables...)
 	if err != nil {
