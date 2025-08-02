@@ -1,10 +1,10 @@
-package repository
+package port
 
 import (
 	"context"
 
+	"github.com/alielmi98/go-hexa-workout/internal/workout/core/models"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
-	"gorm.io/gorm"
 )
 
 type BaseRepository[TEntity any] interface {
@@ -13,6 +13,8 @@ type BaseRepository[TEntity any] interface {
 	Delete(ctx context.Context, id int) error
 	GetById(ctx context.Context, id int) (TEntity, error)
 	GetByFilter(ctx context.Context, req filter.PaginationInputWithFilter) (int64, *[]TEntity, error)
-	BeginTransaction(ctx context.Context) (*gorm.DB, error)
-	CreateTx(tx *gorm.DB, entity TEntity) (TEntity, error)
+}
+
+type WorkoutRepository interface {
+	BaseRepository[models.Workout]
 }

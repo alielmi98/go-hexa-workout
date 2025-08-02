@@ -8,6 +8,7 @@ import (
 	"github.com/alielmi98/go-hexa-workout/docs"
 	"github.com/alielmi98/go-hexa-workout/internal/middlewares"
 	user_router "github.com/alielmi98/go-hexa-workout/internal/user/adapter/http/router"
+	workout_router "github.com/alielmi98/go-hexa-workout/internal/workout/adapter/http/router"
 	"github.com/alielmi98/go-hexa-workout/migrations"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
 	"github.com/alielmi98/go-hexa-workout/pkg/db"
@@ -52,6 +53,10 @@ func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
 		//Account
 		account := v1.Group("/account")
 		user_router.Account(account, cfg)
+
+		//Workout
+		workout := v1.Group("/workouts")
+		workout_router.WorkoutRouters(workout, cfg)
 
 	}
 
