@@ -5,6 +5,7 @@ import (
 	"log"
 
 	"github.com/alielmi98/go-hexa-workout/constants"
+	"github.com/alielmi98/go-hexa-workout/dependency"
 	"github.com/alielmi98/go-hexa-workout/docs"
 	"github.com/alielmi98/go-hexa-workout/internal/middlewares"
 	user_router "github.com/alielmi98/go-hexa-workout/internal/user/adapter/http/router"
@@ -55,8 +56,9 @@ func RegisterRoutes(r *gin.Engine, cfg *config.Config) {
 		user_router.Account(account, cfg)
 
 		//Workout
+		tokenProvider := dependency.GetTokenProvider(cfg)
 		workout := v1.Group("/workouts")
-		workout_router.WorkoutRouters(workout, cfg)
+		workout_router.WorkoutRouters(workout, cfg, tokenProvider)
 
 	}
 

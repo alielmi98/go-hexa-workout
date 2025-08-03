@@ -18,3 +18,7 @@ type BaseRepository[TEntity any] interface {
 type WorkoutRepository interface {
 	BaseRepository[models.Workout]
 }
+
+type WorkoutExerciseRepository interface {
+	BaseRepository[models.WorkoutExercise]
+}

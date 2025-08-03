@@ -43,3 +43,64 @@ func ToCreateWorkoutRequest(from CreateWorkoutRequest) dto.CreateWorkoutRequest 
 		Comments:    from.Comments,
 	}
 }
+
+// WorkoutExercise
+type CreateWorkoutExerciseRequest struct {
+	WorkoutId   int     `json:"workout_id" binding:"required"`
+	Name        string  `json:"name" binding:"required,min=3"`
+	Description string  `json:"description"`
+	Reps        int     `json:"reps" binding:"required"`
+	Sets        int     `json:"sets" binding:"required"`
+	Weight      float64 `json:"weight" binding:"required"`
+}
+
+type UpdateWorkoutExerciseRequest struct {
+	WorkoutId   int     `json:"workout_id" binding:"required"`
+	Name        string  `json:"name" binding:"required,min=3"`
+	Description string  `json:"description"`
+	Reps        int     `json:"reps" binding:"required"`
+	Sets        int     `json:"sets" binding:"required"`
+	Weight      float64 `json:"weight" binding:"required"`
+}
+type WorkoutExerciseResponse struct {
+	Id          int     `json:"id"`
+	WorkoutId   int     `json:"workout_id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Reps        int     `json:"reps"`
+	Sets        int     `json:"sets"`
+	Weight      float64 `json:"weight"`
+}
+
+func ToWorkoutExerciseResponse(from dto.WorkoutExerciseResponse) WorkoutExerciseResponse {
+	return WorkoutExerciseResponse{
+		Id:          from.Id,
+		WorkoutId:   from.WorkoutId,
+		Name:        from.Name,
+		Description: from.Description,
+		Reps:        from.Repetitions,
+		Sets:        from.Sets,
+		Weight:      from.Weight,
+	}
+}
+func ToCreateWorkoutExerciseRequest(from CreateWorkoutExerciseRequest) dto.CreateWorkoutExerciseRequest {
+	return dto.CreateWorkoutExerciseRequest{
+		Name:        from.Name,
+		WorkoutId:   from.WorkoutId,
+		Description: from.Description,
+		Repetitions: from.Reps,
+		Sets:        from.Sets,
+		Weight:      from.Weight,
+	}
+}
+
+func ToUpdateWorkoutExerciseRequest(from UpdateWorkoutExerciseRequest) dto.UpdateWorkoutExerciseRequest {
+	return dto.UpdateWorkoutExerciseRequest{
+		Name:        from.Name,
+		WorkoutId:   from.WorkoutId,
+		Description: from.Description,
+		Repetitions: from.Reps,
+		Sets:        from.Sets,
+		Weight:      from.Weight,
+	}
+}
