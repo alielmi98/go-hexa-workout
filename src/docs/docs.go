@@ -144,6 +144,11 @@ const docTemplate = `{
         },
         "/v1/workouts/workout/": {
             "post": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Create a Workout",
                 "consumes": [
                     "application/json"
@@ -193,6 +198,11 @@ const docTemplate = `{
         },
         "/v1/workouts/workout/get-by-filter": {
             "post": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Get Workouts by Filter",
                 "consumes": [
                     "application/json"
@@ -242,6 +252,11 @@ const docTemplate = `{
         },
         "/v1/workouts/workout/{id}": {
             "get": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Get a Workout by ID",
                 "consumes": [
                     "application/json"
@@ -296,6 +311,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Update a Workout",
                 "consumes": [
                     "application/json"
@@ -359,6 +379,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
                 "description": "Delete a Workout",
                 "tags": [
                     "Workout"

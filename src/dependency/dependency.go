@@ -20,3 +20,7 @@ func GetWorkoutRepository() workoutPort.WorkoutRepository {
 	var preloads []db.PreloadEntity = []db.PreloadEntity{}
 	return workoutInfraRepository.NewBaseRepository[workoutModels.Workout](preloads)
 }
+
+func GetTokenProvider(cfg *config.Config) userPort.TokenProvider {
+	return auth.NewJwtProvider(cfg)
+}

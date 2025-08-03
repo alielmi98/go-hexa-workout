@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/alielmi98/go-hexa-workout/dependency"
+	"github.com/alielmi98/go-hexa-workout/internal/workout/adapter/http/dto"
 	_ "github.com/alielmi98/go-hexa-workout/internal/workout/adapter/http/dto"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/core/usecase"
 	_ "github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
@@ -31,8 +32,9 @@ func NewWorkoutHandler(cfg *config.Config) *WorkoutHandler {
 // @Success 201 {object} helper.BaseHttpResponse{result=dto.WorkoutResponse} "Workout response"
 // @Failure 400 {object} helper.BaseHttpResponse "Bad request"
 // @Router /v1/workouts/workout/ [post]
+// @Security AuthBearer
 func (h *WorkoutHandler) Create(c *gin.Context) {
-	Create(c, h.usecase.Create)
+	Create(c, dto.ToCreateWorkoutRequest, dto.ToWorkoutResponse, h.usecase.Create)
 }
 
 // GetWorkouts godoc
@@ -46,8 +48,9 @@ func (h *WorkoutHandler) Create(c *gin.Context) {
 // @Failure 400 {object} helper.BaseHttpResponse "Bad request"
 // @Failure 404 {object} helper.BaseHttpResponse "Not found"
 // @Router /v1/workouts/workout/{id} [get]
+// @Security AuthBearer
 func (h *WorkoutHandler) GetById(c *gin.Context) {
-	GetById(c, h.usecase.GetById)
+	GetById(c, dto.ToWorkoutResponse, h.usecase.GetById)
 }
 
 // UpdateWorkout godoc
@@ -62,8 +65,9 @@ func (h *WorkoutHandler) GetById(c *gin.Context) {
 // @Failure 400 {object} helper.BaseHttpResponse "Bad request"
 // @Failure 404 {object} helper.BaseHttpResponse "Not found"
 // @Router /v1/workouts/workout/{id} [put]
+// @Security AuthBearer
 func (h *WorkoutHandler) Update(c *gin.Context) {
-	Update(c, h.usecase.Update)
+	Update(c, dto.ToUpdateWorkoutRequest, dto.ToWorkoutResponse, h.usecase.Update)
 }
 
 // DeleteWorkout godoc
@@ -75,6 +79,7 @@ func (h *WorkoutHandler) Update(c *gin.Context) {
 // @Failure 400 {object} helper.BaseHttpResponse "Bad request"
 // @Failure 404 {object} helper.BaseHttpResponse "Not found"
 // @Router /v1/workouts/workout/{id} [delete]
+// @Security AuthBearer
 func (h *WorkoutHandler) Delete(c *gin.Context) {
 	Delete(c, h.usecase.Delete)
 }
@@ -88,6 +93,7 @@ func (h *WorkoutHandler) Delete(c *gin.Context) {
 // @Success 200 {object} helper.BaseHttpResponse{result=filter.PagedList[dto.WorkoutResponse]} "Workout response"
 // @Failure 400 {object} helper.BaseHttpResponse "Bad request"
 // @Router /v1/workouts/workout/get-by-filter [post]
+// @Security AuthBearer
 func (h *WorkoutHandler) GetByFilter(c *gin.Context) {
-	GetByFilter(c, h.usecase.GetByFilter)
+	GetByFilter(c, dto.ToWorkoutResponse, h.usecase.GetByFilter)
 }

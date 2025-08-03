@@ -275,6 +275,8 @@ paths:
           description: Bad request
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Create a Workout
       tags:
       - Workout
@@ -300,6 +302,8 @@ paths:
           description: Not found
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Delete a Workout
       tags:
       - Workout
@@ -333,6 +337,8 @@ paths:
           description: Not found
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Get a Workout by ID
       tags:
       - Workout
@@ -372,6 +378,8 @@ paths:
           description: Not found
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Update a Workout
       tags:
       - Workout
@@ -401,6 +409,8 @@ paths:
           description: Bad request
           schema:
             $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
       summary: Get Workouts by Filter
       tags:
       - Workout
