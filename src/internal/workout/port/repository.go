@@ -22,3 +22,7 @@ type WorkoutRepository interface {
 type WorkoutExerciseRepository interface {
 	BaseRepository[models.WorkoutExercise]
 }
+
+type ScheduledWorkoutsRepository interface {
+	BaseRepository[models.ScheduledWorkouts]
+}

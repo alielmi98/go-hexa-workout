@@ -49,3 +49,21 @@ type UpdateWorkoutExerciseRequest struct {
 	Sets        int
 	Weight      float64
 }
+
+// ScheduledWorkouts
+type ScheduledWorkoutsResponse struct {
+	Id            int
+	WorkoutId     int
+	ScheduledTime string
+	Status        string
+}
+type CreateScheduledWorkoutsRequest struct {
+	WorkoutId     int
+	ScheduledTime string
+	Status        string
+}
+
+type UpdateScheduledWorkoutsRequest struct {
+	ScheduledTime string
+	Status        string
+}

@@ -2,11 +2,14 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/alielmi98/go-hexa-workout/common"
+	"github.com/alielmi98/go-hexa-workout/constants"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
+	"github.com/alielmi98/go-hexa-workout/pkg/service_errors"
 )
 
 type BaseUsecase[TEntity any, TCreate any, TUpdate any, TResponse any] struct {
@@ -66,4 +69,34 @@ func (u *BaseUsecase[TEntity, TCreate, TUpdate, TResponse]) GetByFilter(ctx cont
 	}
 
 	return filter.Paginate[TEntity, TResponse](count, entities, req.PageNumber, int64(req.PageSize))
+}
+
+func (u *BaseUsecase[TEntity, TCreate, TUpdate, TResponse]) CheckOwnership(ctx context.Context, workoutRepo port.WorkoutRepository, workoutId int) error {
+	userId, err := u.getUserIdFromContext(ctx)
+	if err != nil {
+		return &service_errors.ServiceError{EndUserMessage: service_errors.UserIdNotFound, Err: err}
+	}
+
+	workout, err := workoutRepo.GetById(ctx, workoutId)
+	if err != nil {
+		return &service_errors.ServiceError{EndUserMessage: service_errors.FailedToFetchWorkout, Err: err}
+	}
+
+	if userId != workout.UserId {
+		return &service_errors.ServiceError{EndUserMessage: service_errors.UserNotOwner}
+	}
+
+	return nil
+}
+
+func (u *BaseUsecase[TEntity, TCreate, TUpdate, TResponse]) getUserIdFromContext(ctx context.Context) (int, error) {
+	userIdValue := ctx.Value(constants.UserIdKey)
+	if userIdValue == nil {
+		return 0, errors.New("user ID not found in context")
+	}
+	userId, ok := userIdValue.(float64)
+	if !ok {
+		return 0, errors.New("invalid user ID type in context")
+	}
+	return int(userId), nil
 }
