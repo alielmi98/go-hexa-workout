@@ -1,6 +1,8 @@
 package dto
 
-import "github.com/alielmi98/go-hexa-workout/internal/workout/core/usecase/dto"
+import (
+	"github.com/alielmi98/go-hexa-workout/internal/workout/core/usecase/dto"
+)
 
 type CreateWorkoutRequest struct {
 	Name        string `json:"name" binding:"required,min=3"`
@@ -102,5 +104,48 @@ func ToUpdateWorkoutExerciseRequest(from UpdateWorkoutExerciseRequest) dto.Updat
 		Repetitions: from.Reps,
 		Sets:        from.Sets,
 		Weight:      from.Weight,
+	}
+}
+
+// ScheduledWorkoutss
+type ScheduledWorkoutsResponse struct {
+	Id            int    `json:"id"`
+	WorkoutId     int    `json:"workout_id"`
+	ScheduledTime string `json:"scheduled_time"` //ScheduledTime
+	Status        string `json:"status"`
+}
+
+type CreateScheduledWorkoutsRequest struct {
+	WorkoutId     int    `json:"workout_id" binding:"required"`
+	ScheduledTime string `json:"scheduled_time" binding:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	Status        string `json:"status" binding:"required"`
+}
+
+type UpdateScheduledWorkoutsRequest struct {
+	ScheduledTime string `json:"scheduled_time" binding:"required,datetime=2006-01-02T15:04:05Z07:00"`
+	Status        string `json:"status" binding:"required"`
+}
+
+func ToScheduledWorkoutsResponse(from dto.ScheduledWorkoutsResponse) ScheduledWorkoutsResponse {
+	return ScheduledWorkoutsResponse{
+		Id:            from.Id,
+		WorkoutId:     from.WorkoutId,
+		Status:        from.Status,
+		ScheduledTime: from.ScheduledTime,
+	}
+}
+
+func ToCreateScheduledWorkoutsRequest(from CreateScheduledWorkoutsRequest) dto.CreateScheduledWorkoutsRequest {
+	return dto.CreateScheduledWorkoutsRequest{
+		WorkoutId:     from.WorkoutId,
+		ScheduledTime: from.ScheduledTime,
+		Status:        from.Status,
+	}
+}
+
+func ToUpdateScheduledWorkoutsRequest(from UpdateScheduledWorkoutsRequest) dto.UpdateScheduledWorkoutsRequest {
+	return dto.UpdateScheduledWorkoutsRequest{
+		ScheduledTime: from.ScheduledTime,
+		Status:        from.Status,
 	}
 }

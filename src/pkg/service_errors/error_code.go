@@ -15,7 +15,11 @@ const (
 	PermissionDenied          = "Permission denied"
 	UsernameOrPasswordInvalid = "username or password invalid"
 	// Validation
-	ValidationError = "validation error"
+	ValidationError      = "validation error"
+	UserIdNotFound       = "failed to get user ID from context"
+	FailedToFetchWorkout = "failed to fetch workout with ID"
+	UserNotOwner         = "user is not the owner of this workout"
+	InvalidStatus        = "invalid status. Status must be 'active' or 'completed' or 'canceled'"
 
 	// DB
 	RecordNotFound = "record not found"
