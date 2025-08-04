@@ -23,4 +23,11 @@ func WorkoutRouters(r *gin.RouterGroup, cfg *config.Config, tokenProvider port.T
 	r.PUT("/workout-exercise/:id", middlewares.Authentication(cfg, tokenProvider), workoutExerciseHandler.Update)
 	r.GET("/workout-exercise/:id", middlewares.Authentication(cfg, tokenProvider), workoutExerciseHandler.GetById)
 	r.DELETE("/workout-exercise/:id", middlewares.Authentication(cfg, tokenProvider), workoutExerciseHandler.Delete)
+
+	// ScheduledWorkout
+	scheduledWorkoutHandler := handler.NewScheduledWorkoutsHandler(cfg)
+	r.POST("/scheduled-workouts/", middlewares.Authentication(cfg, tokenProvider), scheduledWorkoutHandler.Create)
+	r.PUT("/scheduled-workouts/:id", middlewares.Authentication(cfg, tokenProvider), scheduledWorkoutHandler.Update)
+	r.GET("/scheduled-workouts/:id", middlewares.Authentication(cfg, tokenProvider), scheduledWorkoutHandler.GetById)
+	r.DELETE("/scheduled-workouts/:id", middlewares.Authentication(cfg, tokenProvider), scheduledWorkoutHandler.Delete)
 }

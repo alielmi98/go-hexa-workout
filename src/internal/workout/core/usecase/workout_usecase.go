@@ -10,7 +10,6 @@ import (
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
-	"github.com/alielmi98/go-hexa-workout/pkg/service_errors"
 )
 
 type WorkoutUsecase struct {
@@ -31,14 +30,9 @@ func (u *WorkoutUsecase) Create(ctx context.Context, req dto.CreateWorkoutReques
 
 func (u *WorkoutUsecase) Update(ctx context.Context, id int, req dto.UpdateWorkoutRequest) (dto.WorkoutResponse, error) {
 	// Check if the user is Owner of the Workout
-	userId := int(ctx.Value(constants.UserIdKey).(float64))
-	workout, err := u.base.GetById(ctx, id)
+	err := u.base.CheckOwnership(ctx, u.base.repository, id)
 	if err != nil {
 		return dto.WorkoutResponse{}, err
-	}
-
-	if workout.UserId != userId {
-		return dto.WorkoutResponse{}, &service_errors.ServiceError{EndUserMessage: service_errors.PermissionDenied}
 	}
 
 	return u.base.Update(ctx, id, req)
@@ -46,27 +40,17 @@ func (u *WorkoutUsecase) Update(ctx context.Context, id int, req dto.UpdateWorko
 
 func (u *WorkoutUsecase) Delete(ctx context.Context, id int) error {
 	// Check if the user is Owner of the Workout
-	userId := int(ctx.Value(constants.UserIdKey).(float64))
-	workout, err := u.base.GetById(ctx, id)
+	err := u.base.CheckOwnership(ctx, u.base.repository, id)
 	if err != nil {
 		return err
-	}
-
-	if workout.UserId != userId {
-		return &service_errors.ServiceError{EndUserMessage: service_errors.PermissionDenied}
 	}
 	return u.base.Delete(ctx, id)
 }
 func (u *WorkoutUsecase) GetById(ctx context.Context, id int) (dto.WorkoutResponse, error) {
 	// Check if the user is Owner of the Workout
-	userId := int(ctx.Value(constants.UserIdKey).(float64))
-	workout, err := u.base.GetById(ctx, id)
+	err := u.base.CheckOwnership(ctx, u.base.repository, id)
 	if err != nil {
 		return dto.WorkoutResponse{}, err
-	}
-
-	if workout.UserId != userId {
-		return dto.WorkoutResponse{}, &service_errors.ServiceError{EndUserMessage: service_errors.PermissionDenied}
 	}
 	return u.base.GetById(ctx, id)
 }
