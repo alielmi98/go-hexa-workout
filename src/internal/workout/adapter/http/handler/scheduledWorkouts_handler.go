@@ -12,13 +12,13 @@ import (
 )
 
 type ScheduledWorkoutsHandler struct {
-	usecase *usecase.ScheduledWorkoutsUseCase
+	Usecase *usecase.ScheduledWorkoutsUseCase
 }
 
 func NewScheduledWorkoutsHandler(cfg *config.Config) *ScheduledWorkoutsHandler {
 	schedulWorkoutRepo, workoutRepo := dependency.GetScheduledWorkoutsRepository()
 	return &ScheduledWorkoutsHandler{
-		usecase: usecase.NewScheduledWorkoutsUsecase(cfg, schedulWorkoutRepo, workoutRepo),
+		Usecase: usecase.NewScheduledWorkoutsUsecase(cfg, schedulWorkoutRepo, workoutRepo),
 	}
 }
 
@@ -34,7 +34,7 @@ func NewScheduledWorkoutsHandler(cfg *config.Config) *ScheduledWorkoutsHandler {
 // @Router /v1/workouts/scheduled-workouts/ [post]
 // @Security AuthBearer
 func (h *ScheduledWorkoutsHandler) Create(c *gin.Context) {
-	Create(c, dto.ToCreateScheduledWorkoutsRequest, dto.ToScheduledWorkoutsResponse, h.usecase.Create)
+	Create(c, dto.ToCreateScheduledWorkoutsRequest, dto.ToScheduledWorkoutsResponse, h.Usecase.Create)
 }
 
 // GetScheduledWorkoutss godoc
@@ -50,7 +50,7 @@ func (h *ScheduledWorkoutsHandler) Create(c *gin.Context) {
 // @Router /v1/workouts/scheduled-workouts/{id} [get]
 // @Security AuthBearer
 func (h *ScheduledWorkoutsHandler) GetById(c *gin.Context) {
-	GetById(c, dto.ToScheduledWorkoutsResponse, h.usecase.GetById)
+	GetById(c, dto.ToScheduledWorkoutsResponse, h.Usecase.GetById)
 }
 
 // UpdateScheduledWorkouts godoc
@@ -67,7 +67,7 @@ func (h *ScheduledWorkoutsHandler) GetById(c *gin.Context) {
 // @Router /v1/workouts/scheduled-workouts/{id} [put]
 // @Security AuthBearer
 func (h *ScheduledWorkoutsHandler) Update(c *gin.Context) {
-	Update(c, dto.ToUpdateScheduledWorkoutsRequest, dto.ToScheduledWorkoutsResponse, h.usecase.Update)
+	Update(c, dto.ToUpdateScheduledWorkoutsRequest, dto.ToScheduledWorkoutsResponse, h.Usecase.Update)
 }
 
 // DeleteScheduledWorkouts godoc
@@ -81,5 +81,5 @@ func (h *ScheduledWorkoutsHandler) Update(c *gin.Context) {
 // @Router /v1/workouts/scheduled-workouts/{id} [delete]
 // @Security AuthBearer
 func (h *ScheduledWorkoutsHandler) Delete(c *gin.Context) {
-	Delete(c, h.usecase.Delete)
+	Delete(c, h.Usecase.Delete)
 }

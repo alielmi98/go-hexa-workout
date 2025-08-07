@@ -13,12 +13,12 @@ import (
 )
 
 type WorkoutHandler struct {
-	usecase *usecase.WorkoutUsecase
+	Usecase *usecase.WorkoutUsecase
 }
 
 func NewWorkoutHandler(cfg *config.Config) *WorkoutHandler {
 	return &WorkoutHandler{
-		usecase: usecase.NewWorkoutUsecase(cfg, dependency.GetWorkoutRepository()),
+		Usecase: usecase.NewWorkoutUsecase(cfg, dependency.GetWorkoutRepository()),
 	}
 }
 
@@ -34,7 +34,7 @@ func NewWorkoutHandler(cfg *config.Config) *WorkoutHandler {
 // @Router /v1/workouts/workout/ [post]
 // @Security AuthBearer
 func (h *WorkoutHandler) Create(c *gin.Context) {
-	Create(c, dto.ToCreateWorkoutRequest, dto.ToWorkoutResponse, h.usecase.Create)
+	Create(c, dto.ToCreateWorkoutRequest, dto.ToWorkoutResponse, h.Usecase.Create)
 }
 
 // GetWorkouts godoc
@@ -50,7 +50,7 @@ func (h *WorkoutHandler) Create(c *gin.Context) {
 // @Router /v1/workouts/workout/{id} [get]
 // @Security AuthBearer
 func (h *WorkoutHandler) GetById(c *gin.Context) {
-	GetById(c, dto.ToWorkoutResponse, h.usecase.GetById)
+	GetById(c, dto.ToWorkoutResponse, h.Usecase.GetById)
 }
 
 // UpdateWorkout godoc
@@ -67,7 +67,7 @@ func (h *WorkoutHandler) GetById(c *gin.Context) {
 // @Router /v1/workouts/workout/{id} [put]
 // @Security AuthBearer
 func (h *WorkoutHandler) Update(c *gin.Context) {
-	Update(c, dto.ToUpdateWorkoutRequest, dto.ToWorkoutResponse, h.usecase.Update)
+	Update(c, dto.ToUpdateWorkoutRequest, dto.ToWorkoutResponse, h.Usecase.Update)
 }
 
 // DeleteWorkout godoc
@@ -81,7 +81,7 @@ func (h *WorkoutHandler) Update(c *gin.Context) {
 // @Router /v1/workouts/workout/{id} [delete]
 // @Security AuthBearer
 func (h *WorkoutHandler) Delete(c *gin.Context) {
-	Delete(c, h.usecase.Delete)
+	Delete(c, h.Usecase.Delete)
 }
 
 // GetWorkoutsByFilter godoc
@@ -95,5 +95,5 @@ func (h *WorkoutHandler) Delete(c *gin.Context) {
 // @Router /v1/workouts/workout/get-by-filter [post]
 // @Security AuthBearer
 func (h *WorkoutHandler) GetByFilter(c *gin.Context) {
-	GetByFilter(c, dto.ToWorkoutResponse, h.usecase.GetByFilter)
+	GetByFilter(c, dto.ToWorkoutResponse, h.Usecase.GetByFilter)
 }

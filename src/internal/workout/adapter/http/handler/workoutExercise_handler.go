@@ -11,13 +11,13 @@ import (
 )
 
 type WorkoutExerciseHandler struct {
-	usecase *usecase.WorkoutExerciseUsecase
+	Usecase *usecase.WorkoutExerciseUsecase
 }
 
 func NewWorkoutExerciseHandler(cfg *config.Config) *WorkoutExerciseHandler {
 	workoutExerciseRepo, workoutRepo := dependency.GetWorkoutExerciseRepository()
 	return &WorkoutExerciseHandler{
-		usecase: usecase.NewWorkoutExerciseUsecase(cfg, workoutExerciseRepo, workoutRepo),
+		Usecase: usecase.NewWorkoutExerciseUsecase(cfg, workoutExerciseRepo, workoutRepo),
 	}
 }
 
@@ -33,7 +33,7 @@ func NewWorkoutExerciseHandler(cfg *config.Config) *WorkoutExerciseHandler {
 // @Router /v1/workouts/workout-exercise/ [post]
 // @Security AuthBearer
 func (h *WorkoutExerciseHandler) Create(c *gin.Context) {
-	Create(c, dto.ToCreateWorkoutExerciseRequest, dto.ToWorkoutExerciseResponse, h.usecase.Create)
+	Create(c, dto.ToCreateWorkoutExerciseRequest, dto.ToWorkoutExerciseResponse, h.Usecase.Create)
 }
 
 // GetWorkoutExercises godoc
@@ -49,7 +49,7 @@ func (h *WorkoutExerciseHandler) Create(c *gin.Context) {
 // @Router /v1/workouts/workout-exercise/{id} [get]
 // @Security AuthBearer
 func (h *WorkoutExerciseHandler) GetById(c *gin.Context) {
-	GetById(c, dto.ToWorkoutExerciseResponse, h.usecase.GetById)
+	GetById(c, dto.ToWorkoutExerciseResponse, h.Usecase.GetById)
 }
 
 // UpdateWorkoutExercise godoc
@@ -66,7 +66,7 @@ func (h *WorkoutExerciseHandler) GetById(c *gin.Context) {
 // @Router /v1/workouts/workout-exercise/{id} [put]
 // @Security AuthBearer
 func (h *WorkoutExerciseHandler) Update(c *gin.Context) {
-	Update(c, dto.ToUpdateWorkoutExerciseRequest, dto.ToWorkoutExerciseResponse, h.usecase.Update)
+	Update(c, dto.ToUpdateWorkoutExerciseRequest, dto.ToWorkoutExerciseResponse, h.Usecase.Update)
 }
 
 // DeleteWorkoutExercise godoc
@@ -80,5 +80,5 @@ func (h *WorkoutExerciseHandler) Update(c *gin.Context) {
 // @Router /v1/workouts/workout-exercise/{id} [delete]
 // @Security AuthBearer
 func (h *WorkoutExerciseHandler) Delete(c *gin.Context) {
-	Delete(c, h.usecase.Delete)
+	Delete(c, h.Usecase.Delete)
 }

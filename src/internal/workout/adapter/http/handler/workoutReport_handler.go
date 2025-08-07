@@ -11,13 +11,13 @@ import (
 )
 
 type WorkoutReportHandler struct {
-	usecase *usecase.WorkoutReportUsecase
+	Usecase *usecase.WorkoutReportUsecase
 }
 
 func NewWorkoutReportHandler(cfg *config.Config) *WorkoutReportHandler {
 	workoutReportRepo, workoutRepo := dependency.GetWorkoutReportRepository()
 	return &WorkoutReportHandler{
-		usecase: usecase.NewWorkoutReportUsecase(cfg, workoutReportRepo, workoutRepo),
+		Usecase: usecase.NewWorkoutReportUsecase(cfg, workoutReportRepo, workoutRepo),
 	}
 }
 
@@ -33,7 +33,7 @@ func NewWorkoutReportHandler(cfg *config.Config) *WorkoutReportHandler {
 // @Router /v1/workouts/workout-report/ [post]
 // @Security AuthBearer
 func (h *WorkoutReportHandler) Create(c *gin.Context) {
-	Create(c, dto.ToCreateWorkoutReportRequest, dto.ToWorkoutReportResponse, h.usecase.Create)
+	Create(c, dto.ToCreateWorkoutReportRequest, dto.ToWorkoutReportResponse, h.Usecase.Create)
 }
 
 // GetWorkoutReports godoc
@@ -49,7 +49,7 @@ func (h *WorkoutReportHandler) Create(c *gin.Context) {
 // @Router /v1/workouts/workout-report/{id} [get]
 // @Security AuthBearer
 func (h *WorkoutReportHandler) GetById(c *gin.Context) {
-	GetById(c, dto.ToWorkoutReportResponse, h.usecase.GetById)
+	GetById(c, dto.ToWorkoutReportResponse, h.Usecase.GetById)
 }
 
 // UpdateWorkoutReport godoc
@@ -66,7 +66,7 @@ func (h *WorkoutReportHandler) GetById(c *gin.Context) {
 // @Router /v1/workouts/workout-report/{id} [put]
 // @Security AuthBearer
 func (h *WorkoutReportHandler) Update(c *gin.Context) {
-	Update(c, dto.ToUpdateWorkoutReportRequest, dto.ToWorkoutReportResponse, h.usecase.Update)
+	Update(c, dto.ToUpdateWorkoutReportRequest, dto.ToWorkoutReportResponse, h.Usecase.Update)
 }
 
 // DeleteWorkoutReport godoc
@@ -80,5 +80,5 @@ func (h *WorkoutReportHandler) Update(c *gin.Context) {
 // @Router /v1/workouts/workout-report/{id} [delete]
 // @Security AuthBearer
 func (h *WorkoutReportHandler) Delete(c *gin.Context) {
-	Delete(c, h.usecase.Delete)
+	Delete(c, h.Usecase.Delete)
 }
