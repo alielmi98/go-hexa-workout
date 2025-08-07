@@ -55,11 +55,10 @@ type ScheduledWorkouts struct {
 }
 
 type WorkoutReport struct {
-	Id         int       `gorm:"primarykey"`
-	WorkoutId  int       `gorm:"not null"`
-	UserId     int       `gorm:"not null"`
-	Details    string    `gorm:"type:string;size:255;not null"`
-	ReportDate time.Time `gorm:"type:TIMESTAMP with time zone;not null"`
+	Id        int    `gorm:"primarykey"`
+	WorkoutId int    `gorm:"not null"`
+	UserId    int    `gorm:"not null"`
+	Details   string `gorm:"type:string;size:255;not null"`
 
 	CreatedAt  time.Time      `gorm:"type:TIMESTAMP with time zone;not null"`
 	ModifiedAt sql.NullTime   `gorm:"type:TIMESTAMP with time zone;null"`

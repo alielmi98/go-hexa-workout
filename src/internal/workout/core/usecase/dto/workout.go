@@ -67,3 +67,21 @@ type UpdateScheduledWorkoutsRequest struct {
 	ScheduledTime string
 	Status        string
 }
+
+type WorkoutReportResponse struct {
+	Id        int
+	WorkoutId int
+	UserId    int
+	Details   string
+}
+
+type CreateWorkoutReportRequest struct {
+	WorkoutId int
+	Details   string
+	UserID    int
+}
+
+type UpdateWorkoutReportRequest struct {
+	WorkoutId int
+	Details   string
+}

@@ -579,6 +579,230 @@
                 }
             }
         },
+        "/v1/workouts/workout-report/": {
+            "post": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
+                "description": "Create a WorkoutReport",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkoutReport"
+                ],
+                "summary": "Create a WorkoutReport",
+                "parameters": [
+                    {
+                        "description": "Create a WorkoutReport",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "WorkoutReport response",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/workouts/workout-report/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
+                "description": "Get a WorkoutReport by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkoutReport"
+                ],
+                "summary": "Get a WorkoutReport by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "WorkoutReport ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "WorkoutReport response",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
+                "description": "Update a WorkoutReport",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "WorkoutReport"
+                ],
+                "summary": "Update a WorkoutReport",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "WorkoutReport ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Update a WorkoutReport",
+                        "name": "Request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "WorkoutReport response",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "AuthBearer": []
+                    }
+                ],
+                "description": "Delete a WorkoutReport",
+                "tags": [
+                    "WorkoutReport"
+                ],
+                "summary": "Delete a WorkoutReport",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "WorkoutReport ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/workouts/workout/": {
             "post": {
                 "security": [
@@ -919,12 +1143,7 @@
                     "type": "string"
                 },
                 "status": {
-                    "type": "string",
-                    "enum": [
-                        "active",
-                        "completed",
-                        "cancelled"
-                    ]
+                    "type": "string"
                 },
                 "workout_id": {
                     "type": "integer"
@@ -956,6 +1175,21 @@
                 },
                 "weight": {
                     "type": "number"
+                },
+                "workout_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutReportRequest": {
+            "type": "object",
+            "required": [
+                "details",
+                "workout_id"
+            ],
+            "properties": {
+                "details": {
+                    "type": "string"
                 },
                 "workout_id": {
                     "type": "integer"
@@ -1009,12 +1243,7 @@
                     "type": "string"
                 },
                 "status": {
-                    "type": "string",
-                    "enum": [
-                        "active",
-                        "completed",
-                        "cancelled"
-                    ]
+                    "type": "string"
                 }
             }
         },
@@ -1043,6 +1272,21 @@
                 },
                 "weight": {
                     "type": "number"
+                },
+                "workout_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutReportRequest": {
+            "type": "object",
+            "required": [
+                "details",
+                "workout_id"
+            ],
+            "properties": {
+                "details": {
+                    "type": "string"
                 },
                 "workout_id": {
                     "type": "integer"
@@ -1087,6 +1331,23 @@
                 },
                 "weight": {
                     "type": "number"
+                },
+                "workout_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "user_id": {
+                    "type": "integer"
                 },
                 "workout_id": {
                     "type": "integer"

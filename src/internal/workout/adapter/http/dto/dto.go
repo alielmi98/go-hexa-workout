@@ -149,3 +149,44 @@ func ToUpdateScheduledWorkoutsRequest(from UpdateScheduledWorkoutsRequest) dto.U
 		Status:        from.Status,
 	}
 }
+
+// WorkoutReport
+type WorkoutReportResponse struct {
+	Id        int    `json:"id"`
+	WorkoutId int    `json:"workout_id"`
+	UserId    int    `json:"user_id"`
+	Details   string `json:"details"`
+}
+
+type CreateWorkoutReportRequest struct {
+	WorkoutId int    `json:"workout_id" binding:"required"`
+	Details   string `json:"details" binding:"required"`
+}
+
+type UpdateWorkoutReportRequest struct {
+	Details   string `json:"details" binding:"required"`
+	WorkoutId int    `json:"workout_id" binding:"required"`
+}
+
+func ToWorkoutReportResponse(from dto.WorkoutReportResponse) WorkoutReportResponse {
+	return WorkoutReportResponse{
+		Id:        from.Id,
+		WorkoutId: from.WorkoutId,
+		UserId:    from.UserId,
+		Details:   from.Details,
+	}
+}
+
+func ToCreateWorkoutReportRequest(from CreateWorkoutReportRequest) dto.CreateWorkoutReportRequest {
+	return dto.CreateWorkoutReportRequest{
+		WorkoutId: from.WorkoutId,
+		Details:   from.Details,
+	}
+}
+
+func ToUpdateWorkoutReportRequest(from UpdateWorkoutReportRequest) dto.UpdateWorkoutReportRequest {
+	return dto.UpdateWorkoutReportRequest{
+		Details:   from.Details,
+		WorkoutId: from.WorkoutId,
+	}
+}

@@ -42,3 +42,11 @@ func GetScheduledWorkoutsRepository() (workoutPort.ScheduledWorkoutsRepository, 
 	workoutRepo := workoutInfraRepository.NewBaseRepository[workoutModels.Workout](workoutPreloads)
 	return scheduledWorkoutsRepo, workoutRepo
 }
+
+func GetWorkoutReportRepository() (workoutPort.WorkoutReportRepository, workoutPort.WorkoutRepository) {
+	var workoutReportPreloads []db.PreloadEntity = []db.PreloadEntity{}
+	workoutReportRepo := workoutInfraRepository.NewBaseRepository[workoutModels.WorkoutReport](workoutReportPreloads)
+	var workoutPreloads []db.PreloadEntity = []db.PreloadEntity{}
+	workoutRepo := workoutInfraRepository.NewBaseRepository[workoutModels.Workout](workoutPreloads)
+	return workoutReportRepo, workoutRepo
+}

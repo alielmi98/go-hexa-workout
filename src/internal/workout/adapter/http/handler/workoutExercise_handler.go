@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/alielmi98/go-hexa-workout/dependency"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/adapter/http/dto"
-	_ "github.com/alielmi98/go-hexa-workout/internal/workout/adapter/http/dto"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/core/usecase"
 	_ "github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
