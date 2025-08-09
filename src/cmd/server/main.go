@@ -38,7 +38,7 @@ func main() {
 func InitServer(cfg *config.Config) {
 	r := gin.New()
 
-	r.Use(middlewares.Cors(cfg))
+	r.Use(middlewares.Cors(cfg), middlewares.LimitByRequest())
 	RegisterRoutes(r, cfg)
 	RegisterSwagger(r, cfg)
 	log.Printf("Caller:%s Level:%s Msg:%s", constants.General, constants.Startup, "Started")
