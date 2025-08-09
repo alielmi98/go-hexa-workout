@@ -15,9 +15,8 @@ type WorkoutReportHandler struct {
 }
 
 func NewWorkoutReportHandler(cfg *config.Config) *WorkoutReportHandler {
-	workoutReportRepo, workoutRepo := dependency.GetWorkoutReportRepository()
 	return &WorkoutReportHandler{
-		Usecase: usecase.NewWorkoutReportUsecase(cfg, workoutReportRepo, workoutRepo),
+		Usecase: usecase.NewWorkoutReportUsecase(cfg, dependency.GetWorkoutReportRepository(), dependency.GetWorkoutRepository()),
 	}
 }
 

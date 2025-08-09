@@ -15,9 +15,8 @@ type WorkoutExerciseHandler struct {
 }
 
 func NewWorkoutExerciseHandler(cfg *config.Config) *WorkoutExerciseHandler {
-	workoutExerciseRepo, workoutRepo := dependency.GetWorkoutExerciseRepository()
 	return &WorkoutExerciseHandler{
-		Usecase: usecase.NewWorkoutExerciseUsecase(cfg, workoutExerciseRepo, workoutRepo),
+		Usecase: usecase.NewWorkoutExerciseUsecase(cfg, dependency.GetWorkoutExerciseRepository(), dependency.GetWorkoutRepository()),
 	}
 }
 

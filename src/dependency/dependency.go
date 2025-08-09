@@ -27,26 +27,20 @@ func GetWorkoutRepository() workoutPort.WorkoutRepository {
 	return workoutInfraRepository.NewBaseRepository[workoutModels.Workout](preloads)
 }
 
-func GetWorkoutExerciseRepository() (workoutPort.WorkoutExerciseRepository, workoutPort.WorkoutRepository) {
-	var workoutExercisePreloads []db.PreloadEntity = []db.PreloadEntity{}
-	workoutExerciseRepo := workoutInfraRepository.NewBaseRepository[workoutModels.WorkoutExercise](workoutExercisePreloads)
-	var workoutPreloads []db.PreloadEntity = []db.PreloadEntity{}
-	workoutRepo := workoutInfraRepository.NewBaseRepository[workoutModels.Workout](workoutPreloads)
-	return workoutExerciseRepo, workoutRepo
+func GetWorkoutExerciseRepository() workoutPort.WorkoutExerciseRepository {
+	var preloads []db.PreloadEntity = []db.PreloadEntity{}
+	workoutExerciseRepo := workoutInfraRepository.NewBaseRepository[workoutModels.WorkoutExercise](preloads)
+	return workoutExerciseRepo
 }
 
-func GetScheduledWorkoutsRepository() (workoutPort.ScheduledWorkoutsRepository, workoutPort.WorkoutRepository) {
-	var scheduledWorkoutsPreloads []db.PreloadEntity = []db.PreloadEntity{}
-	scheduledWorkoutsRepo := workoutInfraRepository.NewBaseRepository[workoutModels.ScheduledWorkouts](scheduledWorkoutsPreloads)
-	var workoutPreloads []db.PreloadEntity = []db.PreloadEntity{}
-	workoutRepo := workoutInfraRepository.NewBaseRepository[workoutModels.Workout](workoutPreloads)
-	return scheduledWorkoutsRepo, workoutRepo
+func GetScheduledWorkoutsRepository() workoutPort.ScheduledWorkoutsRepository {
+	var preloads []db.PreloadEntity = []db.PreloadEntity{}
+	scheduledWorkoutsRepo := workoutInfraRepository.NewBaseRepository[workoutModels.ScheduledWorkouts](preloads)
+	return scheduledWorkoutsRepo
 }
 
-func GetWorkoutReportRepository() (workoutPort.WorkoutReportRepository, workoutPort.WorkoutRepository) {
-	var workoutReportPreloads []db.PreloadEntity = []db.PreloadEntity{}
-	workoutReportRepo := workoutInfraRepository.NewBaseRepository[workoutModels.WorkoutReport](workoutReportPreloads)
-	var workoutPreloads []db.PreloadEntity = []db.PreloadEntity{}
-	workoutRepo := workoutInfraRepository.NewBaseRepository[workoutModels.Workout](workoutPreloads)
-	return workoutReportRepo, workoutRepo
+func GetWorkoutReportRepository() workoutPort.WorkoutReportRepository {
+	var preloads []db.PreloadEntity = []db.PreloadEntity{}
+	workoutReportRepo := workoutInfraRepository.NewBaseRepository[workoutModels.WorkoutReport](preloads)
+	return workoutReportRepo
 }

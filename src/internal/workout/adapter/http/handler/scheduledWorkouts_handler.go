@@ -16,9 +16,8 @@ type ScheduledWorkoutsHandler struct {
 }
 
 func NewScheduledWorkoutsHandler(cfg *config.Config) *ScheduledWorkoutsHandler {
-	schedulWorkoutRepo, workoutRepo := dependency.GetScheduledWorkoutsRepository()
 	return &ScheduledWorkoutsHandler{
-		Usecase: usecase.NewScheduledWorkoutsUsecase(cfg, schedulWorkoutRepo, workoutRepo),
+		Usecase: usecase.NewScheduledWorkoutsUsecase(cfg, dependency.GetScheduledWorkoutsRepository(), dependency.GetWorkoutRepository()),
 	}
 }
 
