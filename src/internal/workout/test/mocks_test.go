@@ -1,14 +1,22 @@
 package test
 
 import (
+	"bytes"
 	"context"
+	"net/http"
+	"net/http/httptest"
 	"time"
 
 	"github.com/alielmi98/go-hexa-workout/constants"
+	"github.com/alielmi98/go-hexa-workout/internal/middlewares"
+	"github.com/alielmi98/go-hexa-workout/internal/user/adapter/http/dto"
+	"github.com/alielmi98/go-hexa-workout/internal/user/entity"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/core/models"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/core/usecase"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 )
 
 // MockWorkoutRepository implements WorkoutRepository interface for testing
@@ -97,7 +105,9 @@ func (m *MockScheduledWorkoutsRepository) Update(ctx context.Context, id int, en
 	if m.UpdateFn != nil {
 		return m.UpdateFn(ctx, id, entity)
 	}
+	entity.ScheduledTime = time.Now()
 	entity.Id = id
+
 	return entity, nil
 }
 
@@ -292,4 +302,97 @@ func setupWorkoutExerciseUsecase(exerciseRepo *MockWorkoutExerciseRepository, wo
 func setupWorkoutReportUsecase(reportRepo *MockWorkoutReportRepository, workoutRepo *MockWorkoutRepository) *usecase.WorkoutReportUsecase {
 	cfg := &config.Config{}
 	return usecase.NewWorkoutReportUsecase(cfg, reportRepo, workoutRepo)
+}
+
+// MockTokenProvider implements TokenProvider interface for testing
+type MockTokenProvider struct {
+	GenerateTokenFn func(token *entity.TokenPayload) (*dto.TokenDetail, error)
+	VerifyTokenFn   func(token string) (*jwt.Token, error)
+	GetClaimsFn     func(token string) (map[string]interface{}, error)
+	RefreshTokenFn  func(refreshToken string) (*dto.TokenDetail, error)
+}
+
+func (m *MockTokenProvider) GenerateToken(token *entity.TokenPayload) (*dto.TokenDetail, error) {
+	if m.GenerateTokenFn != nil {
+		return m.GenerateTokenFn(token)
+	}
+	return &dto.TokenDetail{
+		AccessToken:            "mock-access-token",
+		RefreshToken:           "mock-refresh-token",
+		AccessTokenExpireTime:  time.Now().Add(time.Hour).Unix(),
+		RefreshTokenExpireTime: time.Now().Add(24 * time.Hour).Unix(),
+	}, nil
+}
+
+func (m *MockTokenProvider) VerifyToken(token string) (*jwt.Token, error) {
+	if m.VerifyTokenFn != nil {
+		return m.VerifyTokenFn(token)
+	}
+	return &jwt.Token{Valid: true}, nil
+}
+
+func (m *MockTokenProvider) GetClaims(token string) (map[string]interface{}, error) {
+	if m.GetClaimsFn != nil {
+		return m.GetClaimsFn(token)
+	}
+	// Return mock claims with user information
+	return map[string]interface{}{
+		constants.UserIdKey:       float64(1),
+		constants.FirstNameKey:    "Test",
+		constants.LastNameKey:     "User",
+		constants.UsernameKey:     "testuser",
+		constants.EmailKey:        "test@example.com",
+		constants.MobileNumberKey: "1234567890",
+		constants.ExpireTimeKey:   float64(time.Now().Add(time.Hour).Unix()),
+	}, nil
+}
+
+func (m *MockTokenProvider) RefreshToken(refreshToken string) (*dto.TokenDetail, error) {
+	if m.RefreshTokenFn != nil {
+		return m.RefreshTokenFn(refreshToken)
+	}
+	return &dto.TokenDetail{
+		AccessToken:            "mock-new-access-token",
+		RefreshToken:           "mock-new-refresh-token",
+		AccessTokenExpireTime:  time.Now().Add(time.Hour).Unix(),
+		RefreshTokenExpireTime: time.Now().Add(24 * time.Hour).Unix(),
+	}, nil
+}
+
+// Helper function to generate a valid JWT token for testing
+func generateTestToken() string {
+	return "Bearer mock-jwt-token"
+}
+
+// Helper function to create authenticated test context
+func createAuthenticatedContext(userId int) context.Context {
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, constants.UserIdKey, float64(userId))
+	return ctx
+}
+
+// Helper function to create authenticated gin context for testing
+func createAuthenticatedGinContext(method, url string, body []byte, tokenProvider *MockTokenProvider, cfg *config.Config) (*gin.Context, *httptest.ResponseRecorder) {
+	gin.SetMode(gin.TestMode)
+	w := httptest.NewRecorder()
+	c, r := gin.CreateTestContext(w)
+
+	// Setup the route with authentication middleware
+	r.Use(middlewares.Authentication(cfg, tokenProvider))
+
+	// Create request with proper authorization header
+	req, _ := http.NewRequest(method, url, bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set(constants.AuthorizationHeaderKey, generateTestToken())
+
+	c.Set(constants.UserIdKey, float64(1))
+	c.Request = req
+	return c, w
+}
+
+// Helper function to create authenticated gin context with URL parameters
+func createAuthenticatedGinContextWithParams(method, url string, body []byte, params gin.Params, tokenProvider *MockTokenProvider, cfg *config.Config) (*gin.Context, *httptest.ResponseRecorder) {
+	c, w := createAuthenticatedGinContext(method, url, body, tokenProvider, cfg)
+	c.Params = params
+	return c, w
 }

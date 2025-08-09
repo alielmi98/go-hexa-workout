@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -64,9 +65,20 @@ func Update[TRequest any, TUInput any, TUOutput any, TResponse any](c *gin.Conte
 		id int, req TUInput) (TUOutput, error)) {
 
 	// bind http request
-	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	id, err := strconv.Atoi(c.Params.ByName("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.ValidationError, err))
+		return
+	}
+	if id == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.ValidationError, errors.New("invalid id")))
+		return
+	}
+
 	request := new(TRequest)
-	err := c.ShouldBindJSON(&request)
+	err = c.ShouldBindJSON(&request)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusBadRequest,
 			helper.GenerateBaseResponseWithValidationError(nil, false, helper.ValidationError, err))
@@ -91,14 +103,19 @@ func Update[TRequest any, TUInput any, TUOutput any, TResponse any](c *gin.Conte
 }
 
 func Delete(c *gin.Context, usecaseDelete func(ctx context.Context, id int) error) {
-	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	id, err := strconv.Atoi(c.Params.ByName("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.ValidationError, err))
+		return
+	}
 	if id == 0 {
-		c.AbortWithStatusJSON(http.StatusNotFound,
-			helper.GenerateBaseResponse(nil, false, helper.ValidationError))
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.ValidationError, errors.New("invalid id")))
 		return
 	}
 
-	err := usecaseDelete(c, id)
+	err = usecaseDelete(c, id)
 	if err != nil {
 		c.AbortWithStatusJSON(helper.TranslateErrorToStatusCode(err),
 			helper.GenerateBaseResponseWithError(nil, false, helper.InternalError, err))
@@ -115,10 +132,15 @@ func Delete(c *gin.Context, usecaseDelete func(ctx context.Context, id int) erro
 func GetById[TUOutput any, TResponse any](c *gin.Context,
 	responseMapper func(req TUOutput) (res TResponse),
 	usecaseGet func(c context.Context, id int) (TUOutput, error)) {
-	id, _ := strconv.Atoi(c.Params.ByName("id"))
+	id, err := strconv.Atoi(c.Params.ByName("id"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.ValidationError, err))
+		return
+	}
 	if id == 0 {
-		c.AbortWithStatusJSON(http.StatusNotFound,
-			helper.GenerateBaseResponse(nil, false, helper.ValidationError))
+		c.AbortWithStatusJSON(http.StatusBadRequest,
+			helper.GenerateBaseResponseWithError(nil, false, helper.ValidationError, errors.New("invalid id")))
 		return
 	}
 

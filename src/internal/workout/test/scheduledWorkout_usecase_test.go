@@ -20,7 +20,7 @@ func TestCreateScheduledWorkout_Success(t *testing.T) {
 	ctx := createContextWithUserId(1)
 	req := dto.CreateScheduledWorkoutsRequest{
 		WorkoutId:     1,
-		ScheduledTime: time.Now().Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "active",
 	}
 
@@ -40,7 +40,7 @@ func TestCreateScheduledWorkout_InvalidStatus(t *testing.T) {
 	ctx := createContextWithUserId(1)
 	req := dto.CreateScheduledWorkoutsRequest{
 		WorkoutId:     1,
-		ScheduledTime: time.Now().Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "invalid_status",
 	}
 
@@ -64,7 +64,7 @@ func TestCreateScheduledWorkout_WorkoutNotFound(t *testing.T) {
 	ctx := createContextWithUserId(1)
 	req := dto.CreateScheduledWorkoutsRequest{
 		WorkoutId:     999,
-		ScheduledTime: time.Now().Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "active",
 	}
 
@@ -89,7 +89,7 @@ func TestCreateScheduledWorkout_UnauthorizedUser(t *testing.T) {
 	ctx := createContextWithUserId(1) // User ID 1 trying to access workout owned by user ID 2
 	req := dto.CreateScheduledWorkoutsRequest{
 		WorkoutId:     1,
-		ScheduledTime: time.Now().Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "active",
 	}
 
@@ -110,7 +110,7 @@ func TestCreateScheduledWorkout_RepositoryError(t *testing.T) {
 	ctx := createContextWithUserId(1)
 	req := dto.CreateScheduledWorkoutsRequest{
 		WorkoutId:     1,
-		ScheduledTime: time.Now().Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "active",
 	}
 
@@ -127,15 +127,15 @@ func TestUpdateScheduledWorkout_Success(t *testing.T) {
 
 	ctx := createContextWithUserId(1)
 	req := dto.UpdateScheduledWorkoutsRequest{
-		ScheduledTime: time.Now().Add(time.Hour).Format(time.RFC3339),
-		Status:        "completed",
+		ScheduledTime: time.Now(),
+		Status:        "cancelled",
 	}
 
 	response, err := useCase.Update(ctx, 1, req)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 1, response.Id)
-	assert.Equal(t, "completed", response.Status)
+	assert.Equal(t, "cancelled", response.Status)
 }
 
 func TestUpdateScheduledWorkout_InvalidStatus(t *testing.T) {
@@ -145,7 +145,7 @@ func TestUpdateScheduledWorkout_InvalidStatus(t *testing.T) {
 
 	ctx := createContextWithUserId(1)
 	req := dto.UpdateScheduledWorkoutsRequest{
-		ScheduledTime: time.Now().Add(time.Hour).Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "invalid_status",
 	}
 
@@ -168,7 +168,7 @@ func TestUpdateScheduledWorkout_ScheduledWorkoutNotFound(t *testing.T) {
 
 	ctx := createContextWithUserId(1)
 	req := dto.UpdateScheduledWorkoutsRequest{
-		ScheduledTime: time.Now().Add(time.Hour).Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "completed",
 	}
 
@@ -192,7 +192,7 @@ func TestUpdateScheduledWorkout_UnauthorizedUser(t *testing.T) {
 
 	ctx := createContextWithUserId(1) // User ID 1 trying to update workout owned by user ID 2
 	req := dto.UpdateScheduledWorkoutsRequest{
-		ScheduledTime: time.Now().Add(time.Hour).Format(time.RFC3339),
+		ScheduledTime: time.Now(),
 		Status:        "completed",
 	}
 

@@ -10,6 +10,7 @@ import (
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port"
 	"github.com/alielmi98/go-hexa-workout/internal/workout/port/filter"
 	"github.com/alielmi98/go-hexa-workout/pkg/config"
+	"github.com/alielmi98/go-hexa-workout/pkg/service_errors"
 )
 
 type WorkoutUsecase struct {
@@ -48,11 +49,16 @@ func (u *WorkoutUsecase) Delete(ctx context.Context, id int) error {
 }
 func (u *WorkoutUsecase) GetById(ctx context.Context, id int) (dto.WorkoutResponse, error) {
 	// Check if the user is Owner of the Workout
-	err := u.base.CheckOwnership(ctx, u.base.repository, id)
+	userId := int(ctx.Value(constants.UserIdKey).(float64))
+	workout, err := u.base.GetById(ctx, id)
 	if err != nil {
 		return dto.WorkoutResponse{}, err
 	}
-	return u.base.GetById(ctx, id)
+	if workout.UserId != userId {
+		return dto.WorkoutResponse{}, &service_errors.ServiceError{EndUserMessage: service_errors.UserNotOwner}
+	}
+
+	return workout, nil
 }
 func (u *WorkoutUsecase) GetByFilter(ctx context.Context, req filter.PaginationInputWithFilter) (*filter.PagedList[dto.WorkoutResponse], error) {
 	// Add user filter to ensure users only see their own workouts

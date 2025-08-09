@@ -1,5 +1,7 @@
 package dto
 
+import "time"
+
 // Workout
 type CreateWorkoutRequest struct {
 	Name        string
@@ -59,12 +61,12 @@ type ScheduledWorkoutsResponse struct {
 }
 type CreateScheduledWorkoutsRequest struct {
 	WorkoutId     int
-	ScheduledTime string
+	ScheduledTime time.Time
 	Status        string
 }
 
 type UpdateScheduledWorkoutsRequest struct {
-	ScheduledTime string
+	ScheduledTime time.Time
 	Status        string
 }
 

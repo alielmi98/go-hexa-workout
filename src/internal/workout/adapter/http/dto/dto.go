@@ -1,6 +1,8 @@
 package dto
 
 import (
+	"time"
+
 	"github.com/alielmi98/go-hexa-workout/internal/workout/core/usecase/dto"
 )
 
@@ -116,14 +118,14 @@ type ScheduledWorkoutsResponse struct {
 }
 
 type CreateScheduledWorkoutsRequest struct {
-	WorkoutId     int    `json:"workout_id" binding:"required"`
-	ScheduledTime string `json:"scheduled_time" binding:"required,datetime=2006-01-02T15:04:05Z07:00"`
-	Status        string `json:"status" binding:"required"`
+	WorkoutId     int       `json:"workout_id" binding:"required"`
+	ScheduledTime time.Time `json:"scheduled_time" binding:"required"`
+	Status        string    `json:"status" binding:"required"`
 }
 
 type UpdateScheduledWorkoutsRequest struct {
-	ScheduledTime string `json:"scheduled_time" binding:"required,datetime=2006-01-02T15:04:05Z07:00"`
-	Status        string `json:"status" binding:"required"`
+	ScheduledTime time.Time `json:"scheduled_time" binding:"required"`
+	Status        string    `json:"status" binding:"required"`
 }
 
 func ToScheduledWorkoutsResponse(from dto.ScheduledWorkoutsResponse) ScheduledWorkoutsResponse {
