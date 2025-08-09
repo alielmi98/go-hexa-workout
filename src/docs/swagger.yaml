@@ -34,6 +34,223 @@ definitions:
     - password
     - username
     type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateScheduledWorkoutsRequest:
+    properties:
+      scheduled_time:
+        type: string
+      status:
+        type: string
+      workout_id:
+        type: integer
+    required:
+    - scheduled_time
+    - status
+    - workout_id
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutExerciseRequest:
+    properties:
+      description:
+        type: string
+      name:
+        minLength: 3
+        type: string
+      reps:
+        type: integer
+      sets:
+        type: integer
+      weight:
+        type: number
+      workout_id:
+        type: integer
+    required:
+    - name
+    - reps
+    - sets
+    - weight
+    - workout_id
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutReportRequest:
+    properties:
+      details:
+        type: string
+      workout_id:
+        type: integer
+    required:
+    - details
+    - workout_id
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutRequest:
+    properties:
+      comments:
+        type: string
+      description:
+        type: string
+      name:
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.ScheduledWorkoutsResponse:
+    properties:
+      id:
+        type: integer
+      scheduled_time:
+        description: ScheduledTime
+        type: string
+      status:
+        type: string
+      workout_id:
+        type: integer
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateScheduledWorkoutsRequest:
+    properties:
+      scheduled_time:
+        type: string
+      status:
+        type: string
+    required:
+    - scheduled_time
+    - status
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutExerciseRequest:
+    properties:
+      description:
+        type: string
+      name:
+        minLength: 3
+        type: string
+      reps:
+        type: integer
+      sets:
+        type: integer
+      weight:
+        type: number
+      workout_id:
+        type: integer
+    required:
+    - name
+    - reps
+    - sets
+    - weight
+    - workout_id
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutReportRequest:
+    properties:
+      details:
+        type: string
+      workout_id:
+        type: integer
+    required:
+    - details
+    - workout_id
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutRequest:
+    properties:
+      comments:
+        type: string
+      description:
+        type: string
+      name:
+        minLength: 3
+        type: string
+    required:
+    - name
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutExerciseResponse:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      reps:
+        type: integer
+      sets:
+        type: integer
+      weight:
+        type: number
+      workout_id:
+        type: integer
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse:
+    properties:
+      details:
+        type: string
+      id:
+        type: integer
+      user_id:
+        type: integer
+      workout_id:
+        type: integer
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutResponse:
+    properties:
+      comments:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.Filter:
+    properties:
+      filterType:
+        description: text number
+        type: string
+      from:
+        type: string
+      to:
+        type: string
+      type:
+        description: contains notContains equals notEqual startsWith lessThan lessThanOrEqual
+          greaterThan greaterThanOrEqual inRange endsWith
+        type: string
+    type: object
+  ? github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.PagedList-github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto_WorkoutResponse
+  : properties:
+      hasNextPage:
+        type: boolean
+      hasPreviousPage:
+        type: boolean
+      items:
+        items:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutResponse'
+        type: array
+      pageNumber:
+        type: integer
+      pageSize:
+        type: integer
+      totalPages:
+        type: integer
+      totalRows:
+        type: integer
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.PaginationInputWithFilter:
+    properties:
+      filter:
+        additionalProperties:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.Filter'
+        type: object
+      pageNumber:
+        type: integer
+      pageSize:
+        type: integer
+      sort:
+        items:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.Sort'
+        type: array
+    type: object
+  github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.Sort:
+    properties:
+      colId:
+        type: string
+      sort:
+        type: string
+    type: object
   github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse:
     properties:
       error: {}
@@ -159,6 +376,573 @@ paths:
       summary: RegisterByUsername
       tags:
       - Account
+  /v1/workouts/scheduled-workouts/:
+    post:
+      consumes:
+      - application/json
+      description: Create a ScheduledWorkouts
+      parameters:
+      - description: Create a ScheduledWorkouts
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateScheduledWorkoutsRequest'
+      responses:
+        "201":
+          description: ScheduledWorkouts response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.ScheduledWorkoutsResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Create a ScheduledWorkouts
+      tags:
+      - ScheduledWorkouts
+  /v1/workouts/scheduled-workouts/{id}:
+    delete:
+      description: Delete a ScheduledWorkouts
+      parameters:
+      - description: ScheduledWorkouts ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Delete a ScheduledWorkouts
+      tags:
+      - ScheduledWorkouts
+    get:
+      consumes:
+      - application/json
+      description: Get a ScheduledWorkouts by ID
+      parameters:
+      - description: ScheduledWorkouts ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ScheduledWorkouts response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.ScheduledWorkoutsResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Get a ScheduledWorkouts by ID
+      tags:
+      - ScheduledWorkouts
+    put:
+      consumes:
+      - application/json
+      description: Update a ScheduledWorkouts
+      parameters:
+      - description: ScheduledWorkouts ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update a ScheduledWorkouts
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateScheduledWorkoutsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ScheduledWorkouts response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.ScheduledWorkoutsResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Update a ScheduledWorkouts
+      tags:
+      - ScheduledWorkouts
+  /v1/workouts/workout-exercise/:
+    post:
+      consumes:
+      - application/json
+      description: Create a WorkoutExercise
+      parameters:
+      - description: Create a WorkoutExercise
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutExerciseRequest'
+      responses:
+        "201":
+          description: WorkoutExercise response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutExerciseResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Create a WorkoutExercise
+      tags:
+      - WorkoutExercise
+  /v1/workouts/workout-exercise/{id}:
+    delete:
+      description: Delete a WorkoutExercise
+      parameters:
+      - description: WorkoutExercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Delete a WorkoutExercise
+      tags:
+      - WorkoutExercise
+    get:
+      consumes:
+      - application/json
+      description: Get a WorkoutExercise by ID
+      parameters:
+      - description: WorkoutExercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WorkoutExercise response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutExerciseResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Get a WorkoutExercise by ID
+      tags:
+      - WorkoutExercise
+    put:
+      consumes:
+      - application/json
+      description: Update a WorkoutExercise
+      parameters:
+      - description: WorkoutExercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update a WorkoutExercise
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutExerciseRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WorkoutExercise response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutExerciseResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Update a WorkoutExercise
+      tags:
+      - WorkoutExercise
+  /v1/workouts/workout-report/:
+    post:
+      consumes:
+      - application/json
+      description: Create a WorkoutReport
+      parameters:
+      - description: Create a WorkoutReport
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutReportRequest'
+      responses:
+        "201":
+          description: WorkoutReport response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Create a WorkoutReport
+      tags:
+      - WorkoutReport
+  /v1/workouts/workout-report/{id}:
+    delete:
+      description: Delete a WorkoutReport
+      parameters:
+      - description: WorkoutReport ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Delete a WorkoutReport
+      tags:
+      - WorkoutReport
+    get:
+      consumes:
+      - application/json
+      description: Get a WorkoutReport by ID
+      parameters:
+      - description: WorkoutReport ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WorkoutReport response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Get a WorkoutReport by ID
+      tags:
+      - WorkoutReport
+    put:
+      consumes:
+      - application/json
+      description: Update a WorkoutReport
+      parameters:
+      - description: WorkoutReport ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update a WorkoutReport
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutReportRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: WorkoutReport response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutReportResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Update a WorkoutReport
+      tags:
+      - WorkoutReport
+  /v1/workouts/workout/:
+    post:
+      consumes:
+      - application/json
+      description: Create a Workout
+      parameters:
+      - description: Create a Workout
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.CreateWorkoutRequest'
+      responses:
+        "201":
+          description: Workout response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Create a Workout
+      tags:
+      - Workout
+  /v1/workouts/workout/{id}:
+    delete:
+      description: Delete a Workout
+      parameters:
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Delete a Workout
+      tags:
+      - Workout
+    get:
+      consumes:
+      - application/json
+      description: Get a Workout by ID
+      parameters:
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Workout response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Get a Workout by ID
+      tags:
+      - Workout
+    put:
+      consumes:
+      - application/json
+      description: Update a Workout
+      parameters:
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update a Workout
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.UpdateWorkoutRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Workout response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto.WorkoutResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Update a Workout
+      tags:
+      - Workout
+  /v1/workouts/workout/get-by-filter:
+    post:
+      consumes:
+      - application/json
+      description: Get Workouts by Filter
+      parameters:
+      - description: Request
+        in: body
+        name: Request
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.PaginationInputWithFilter'
+      responses:
+        "200":
+          description: Workout response
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+            - properties:
+                result:
+                  $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_internal_workout_port_filter.PagedList-github_com_alielmi98_go-hexa-workout_internal_workout_adapter_http_dto_WorkoutResponse'
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_alielmi98_go-hexa-workout_pkg_helper.BaseHttpResponse'
+      security:
+      - AuthBearer: []
+      summary: Get Workouts by Filter
+      tags:
+      - Workout
 securityDefinitions:
   AuthBearer:
     in: header

@@ -23,3 +23,6 @@ jobs:
 
     - name: Run User Tests
       run: cd src/internal/user/test && go test -v
+
+    - name: Run workout Tests
+      run: cd src/internal/workout/test && go test -v
